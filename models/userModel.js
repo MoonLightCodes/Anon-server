@@ -1,11 +1,6 @@
 const userDB = require("mongoose");
 
 const userSchema = userDB.Schema({
-  email: {
-    type: String,
-    required: [true, "Enter Email"],
-    unique: [true, "Email ALready Exist"],
-  },
   username: {
     type: String,
     required: [true, "Enter Username"],
@@ -15,6 +10,7 @@ const userSchema = userDB.Schema({
     type: String,
     required: [true, "Enter Password"],
   },
+  activeChats:[{type:String}]
 },{
   timestamps:true
 });

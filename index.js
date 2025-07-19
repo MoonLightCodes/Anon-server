@@ -11,6 +11,7 @@ app.use(
   })
 );
 
+app.use("/user", require("./routes/userRoutes"));
 app.use("/api", require("./routes/roomRoutes"));
 
 const port = process.env.PORT || 8888;
