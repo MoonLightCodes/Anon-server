@@ -86,7 +86,7 @@ exports.generateMeaningfulPhrase = function (activeChats) {
 
     phrase = `${adj} ${subj} ${verb} ${obj}`; // Proper grammar flow
     attempts++;
-    if (attempts > 100) return null; // Prevent infinite loop
+    // if (attempts > 100) return null; // Prevent infinite loop
   } while (activeChats.has(phrase));
 
   return phrase;

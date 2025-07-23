@@ -7,9 +7,13 @@ const verifyToken = (req, res, next) => {
     token = tokenHead.split(" ")[1];
     jwt.verify(token, process.env.accessTokenSecret, (err, decoded) => {
       if (err) {
+        if(err.name === 'Token expired'){
+          return res.redirect('/login');
+        }
         return res.status(401).json({ message: "Invalid Session" });
       }
       req.user = decoded.user;
+      console.log(decoded)
       next();
     });
   } else {

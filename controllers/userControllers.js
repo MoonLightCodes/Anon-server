@@ -56,7 +56,15 @@ const userLogin = asyncHandler(async (req, res) => {
       }
     );
 
-    res.status(200).json({ accessToken, activeChats: user.activeChats });
+    res
+      .status(200)
+      .json({
+        token: accessToken,
+        activeChats: findUser.activeChats,
+        id: findUser.id,
+        username: findUser.username,
+        message: "Login Successfull",
+      });
   } else {
     return res.status(400).json({ message: "Invalid UserName or Password" });
   }
