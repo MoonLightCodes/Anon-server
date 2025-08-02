@@ -14,7 +14,7 @@ app.use(
 );
 app.use(require("./middleware/logger.js"));//logger
 app.use("/user", require("./routes/userRoutes"));
-app.use("/api", require("./routes/roomRoutes"));
+app.use('/api',require('./routes/roomRoutes.js'))
 
 const port = process.env.PORT || 8888;
 server.listen(port, () => console.log("server listening on", port));
