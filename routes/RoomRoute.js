@@ -5,7 +5,7 @@ const {
   getChats,
   deleteChats,
   exitChat,
-} = require("../controllers/RoomControllers");
+} = require("../controllers/roomControllers");
 const verifyToken = require("../middleware/verifyToken");
 const router = express.Router();
 
