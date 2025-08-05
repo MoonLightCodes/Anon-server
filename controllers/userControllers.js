@@ -52,7 +52,7 @@ const userLogin = asyncHandler(async (req, res) => {
       },
       process.env.accessTokenSecret,
       {
-        expiresIn: "100m",
+        expiresIn: "10d",
       }
     );
 
