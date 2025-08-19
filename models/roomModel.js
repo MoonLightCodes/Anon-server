@@ -8,6 +8,7 @@ const conversationSchema = new Schema(
       unique: [true, "Phrase already in use"],
     },
     members: [{ type: Types.ObjectId, ref: "userDB" }],
+    unreadUsers: [{ type: Types.ObjectId, ref: "userDB" }],
     messages: [{ type: Types.ObjectId, ref: "messages" }],
   },
   { timestamps: true }
