@@ -181,7 +181,6 @@ exports.uploadToDiskStoarge = async (req, res) => {
 
     // Step 3: Resize and save locally
     await sharp(req.file.buffer)
-      .resize(500, 500)
       .toFormat("jpeg")
       .toFile(resizedFilePath);
 
