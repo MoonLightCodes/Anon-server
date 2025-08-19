@@ -12,6 +12,10 @@ const userSchema = userDB.Schema(
       required: [true, "Enter Password"], 
     },
     activeChats: [{ type: userDB.Types.ObjectId,ref:"conversation" }],
+    unreadMessages: {
+      type:userDB.Schema.Types.ObjectId,
+      default: null,
+    }
   },
   {
     timestamps: true,

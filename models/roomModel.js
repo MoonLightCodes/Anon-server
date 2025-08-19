@@ -18,6 +18,7 @@ const conversation = model("conversation", conversationSchema);
 const messageSchema = new Schema(
   {
     text: { type: String },
+    images: [{ type: String }],
     sender: {
       type: Types.ObjectId,
       ref: "userDB",

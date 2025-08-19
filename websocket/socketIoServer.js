@@ -22,10 +22,11 @@ io.on("connection", (socket) => {
     socket.join(roomPhrase);
   });
 
-  socket.on("send_message", async ({ text, phrase }) => {
+  socket.on("send_message", async ({ text,images, phrase }) => {
     try {
       const newMsg = await messages.create({
         text,
+        images,
         sender: new mongoose.Types.ObjectId(socket.userId),
       });
 

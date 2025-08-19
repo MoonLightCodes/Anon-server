@@ -1,7 +1,10 @@
 const { generateMeaningfulPhrase } = require("../utils/generateWord");
 const { conversation, allChats, messages } = require("../models/roomModel");
 const userDB = require("../models/userModel");
-const { model } = require("mongoose");
+const cloudinary = require("../config/cloudinary");
+const path = require("path");
+const fs = require("fs");
+const sharp = require("sharp")
 
 const activeChats = new Map();
 const fillActiveChats = async () => {
@@ -141,10 +144,7 @@ exports.exitChat = async (req, res) => {
     let flag = convo.members.length === 1;
 
     // ✅ Fix: Remove room from user's activeChats by _id
-    await userDB.updateOne(
-      { _id: id },
-      { $pull: { activeChats: convo._id } }
-    );
+    await userDB.updateOne({ _id: id }, { $pull: { activeChats: convo._id } });
 
     // ✅ Fix: Remove user from members array
     await conversation.updateOne(
@@ -160,6 +160,60 @@ exports.exitChat = async (req, res) => {
     return res.status(200).json({ message: "Room Successfully left" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+};
+exports.uploadToDiskStoarge = async (req, res) => {
+  if (!req.file) {
+    return sendResponse(res, "No file uploaded");
+  }
+  console.log("entered upload disk controller");
+
+  try {
+    // Step 1: Create user upload directory if not exists
+    const uploadDir = path.join(__dirname, "../uploads", req.user.id);
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    // Step 2: Prepare resized file path
+    const resizedFileName = `resized-${Date.now()}.jpeg`;
+    const resizedFilePath = path.join(uploadDir, resizedFileName);
+
+    // Step 3: Resize and save locally
+    await sharp(req.file.buffer)
+      .resize(500, 500)
+      .toFormat("jpeg")
+      .toFile(resizedFilePath);
+
+    // Step 4: Upload to Cloudinary
+    const cloudinaryResult = await cloudinary.uploader.upload(resizedFilePath, {
+      folder: `user_uploads/${req.user.id}`,
+      resource_type: "image",
+    });
+
+    // Step 5: Cleanup local storage (delete folder directly)
+    if (fs.existsSync(uploadDir)) {
+      fs.rmSync(uploadDir, { recursive: true, force: true });
+    }
+
+    // Step 6: Respond with Cloudinary info
+    const data = {
+      success: true,
+      cloudinary: {
+        url: cloudinaryResult.secure_url,
+        public_id: cloudinaryResult.public_id,
+        width: cloudinaryResult.width,
+        height: cloudinaryResult.height,
+        format: cloudinaryResult.format,
+      },
+    };
+
+    return res
+      .status(200)
+      .json({ message: "Photo successfully uploaded", data });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "File upload failed" });
   }
 };
 
